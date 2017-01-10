@@ -1,0 +1,11 @@
+/*
+Backups up to NUL device and truncates the vlogs that are no longer needed.
+Can take a long time with very large log files.
+*/
+BACKUP LOG MyDb TO DISK='NUL:'
+
+/*
+Very quick on large databases.
+*/
+ALTER DATABASE MyDb SET RECOVERY SIMPLE
+ALTER DATABASE MyDb SET RECOVERY FULL
