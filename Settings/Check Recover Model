@@ -1,0 +1,3 @@
+select d.name, case when d.recovery_model = 1 and rs.last_log_backup_lsn is null then 'PSUEDO-SIMPLE' else d.recovery_model_desc end [recovery_model_desc]
+from sys.databases d
+inner join sys.database_recovery_status rs on rs.database_id = d.database_id
