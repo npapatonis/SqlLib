@@ -1,0 +1,9 @@
+-- Returns overall size and percent used for all databases
+DBCC SQLPERF(LOGSPACE)
+-- Returns list of vlogs in current database
+DBCC LOGINFO
+-- Returns list of vlogs in specified database
+DBCC LOGINFO('MyDB')
+
+-- Returns all log records between to LSNs
+SELECT * FROM sys.fn_dblog(NULL, NULL)
