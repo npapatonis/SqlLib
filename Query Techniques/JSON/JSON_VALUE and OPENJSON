@@ -1,0 +1,51 @@
+-- Database must be 2016 or SQL Azure 130.  Some SQL Azure DBs might still be 120.
+--ALTER DATABASE CURRENT SET COMPATIBILITY_LEVEL = 130;
+
+-- Replace the "SELECT MAX" subquery with a specific AutoId value to see another tour instance
+--DECLARE @AutoId INT = (SELECT MAX([AutoId]) FROM [dbo].[TblObjs] WHERE [Type] = -1869512221)
+DECLARE @AutoId INT = 561
+
+SELECT	[Id],
+		JSON_VALUE([V], '$.TourDefinition.Name') AS TourName,
+		CASE JSON_VALUE([V], '$.Status')
+			WHEN '1' THEN 'Not Started'
+			WHEN '2' THEN 'In Progress'
+			WHEN '3' THEN 'Completed'
+			WHEN '4' THEN 'Partially completed'
+			WHEN '5' THEN 'Cancelled'
+			WHEN '6' THEN 'Ended by admin'
+			ELSE 'Unknown' END AS TourStatus,
+		JSON_VALUE([V], '$.StartTime') AS TourStartTime,
+		JSON_VALUE([V], '$.EndTime') AS TourEndTime,
+		[CreatedTime],
+		[SrvTime],
+		[Time],
+		[User]
+FROM	[dbo].[TblObjs] AS Objs
+WHERE	Objs.[AutoId] = @AutoId;
+
+WITH TourLocations AS
+(
+SELECT		Objs.[AutoId],
+			JSON_VALUE(Locations.[value], '$.Location.Name') As [Name],
+			JSON_VALUE(Locations.[value], '$.LocationVisited') As Visited,
+			CAST(JSON_VALUE(Locations.[value], '$.LocationVisitedDateTime') AS DATETIMEOFFSET) As VisitedDateTime,
+			CAST(JSON_VALUE(Locations.[value], '$.GeoLocation.Time') AS DATETIMEOFFSET) As GeoLocationTime,
+			JSON_VALUE(Locations.[value], '$.GeoLocation.V.Longitude') As Longitude,
+			JSON_VALUE(Locations.[value], '$.GeoLocation.V.Latitude') As Latitude,
+			JSON_VALUE(Locations.[value], '$.GeoLocation.V.Altitude') As Altitude
+FROM		[dbo].[TblObjs] AS Objs
+CROSS APPLY	OPENJSON (Objs.[V], '$.Locations') AS Locations
+)
+-- This will select only visited locations from the most recent tour instance.
+-- Remove the "AND [Visited] = 'true'" to see all locations.
+SELECT	[Name],
+		[Visited],
+		[VisitedDateTime],
+		[GeoLocationTime],
+		[Longitude],
+		[Latitude],
+		[Altitude]
+FROM	TourLocations
+WHERE	[AutoId] = @AutoId
+AND		[Visited] = 'true'
