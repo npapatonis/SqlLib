@@ -1,4 +1,0 @@
-SELECT		  d.name,
-			      CASE WHEN d.recovery_model = 1 AND rs.last_log_backup_lsn IS NULL THEN 'PSUEDO-SIMPLE' ELSE d.recovery_model_desc END [recovery_model_desc]
-FROM		    sys.databases d
-INNER JOIN	sys.database_recovery_status rs ON rs.database_id = d.database_id
