@@ -1,0 +1,3 @@
+select 
+    InstanceDefaultDataPath = serverproperty('InstanceDefaultDataPath'),
+    InstanceDefaultLogPath = serverproperty('InstanceDefaultLogPath')
