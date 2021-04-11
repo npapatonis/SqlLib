@@ -1,8 +1,6 @@
 -- Database must be COMPATIBILITY_LEVEL = 130.  Some SQL Azure DBs might still be 120.
 --ALTER DATABASE CURRENT SET COMPATIBILITY_LEVEL = 130;
 
--- Remote comment #1
-
 -- Replace the "SELECT MAX" subquery with a specific AutoId value to see another tour instance
 --DECLARE @AutoId INT = (SELECT MAX([AutoId]) FROM [dbo].[TblObjs] WHERE [Type] = -1869512221)
 DECLARE @AutoId INT = 561
