@@ -24,6 +24,7 @@ SELECT	[Id],
 FROM	[dbo].[TblObjs] AS Objs
 WHERE	Objs.[AutoId] = @AutoId;
 
+-- Must use OPENJSON to create set of locations packed into the V column as an array
 WITH TourLocations AS
 (
 SELECT		Objs.[AutoId],
